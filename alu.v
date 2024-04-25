@@ -1,9 +1,10 @@
 `include "ctrl_encode_def.v"
 
-module alu(A, B, ALUOp, C, Zero);
+module alu(A, B, ALUOp, C, Zero, shamt);
 
    input  signed [31:0] A, B;
-   input         [2:0]  ALUOp;
+   input         [3:0]  ALUOp;
+   input         [4:0] shamt;
    output signed [31:0] C;
    output Zero;
    
@@ -19,6 +20,7 @@ module alu(A, B, ALUOp, C, Zero);
           `ALU_OR:   C = A | B;                      // OR/ORI
           `ALU_SLT:  C = (A < B) ? 32'd1 : 32'd0;    // SLT/SLTI
           `ALU_SLTU: C = ({1'b0, A} < {1'b0, B}) ? 32'd1 : 32'd0;
+          `ALU_SLL:  C = B << shamt;
           default:   C = A;                          // Undefined
       endcase
    end // end always

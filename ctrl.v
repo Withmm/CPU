@@ -14,7 +14,7 @@ module ctrl(Op, Funct, Zero,
    output       RegWrite; // control signal for register write
    output       MemWrite; // control signal for memory write
    output       EXTOp;    // control signal to signed extension
-   output [2:0] ALUOp;    // ALU opertion
+   output [3:0] ALUOp;    // ALU opertion
    output [1:0] NPCOp;    // next pc operation
    output       ALUSrc;   // ALU source for B
 
@@ -31,6 +31,7 @@ module ctrl(Op, Funct, Zero,
    wire i_sltu = rtype& Funct[5]&~Funct[4]& Funct[3]&~Funct[2]& Funct[1]& Funct[0]; // sltu
    wire i_addu = rtype& Funct[5]&~Funct[4]&~Funct[3]&~Funct[2]&~Funct[1]& Funct[0]; // addu
    wire i_subu = rtype& Funct[5]&~Funct[4]&~Funct[3]&~Funct[2]& Funct[1]& Funct[0]; // subu
+   wire i_sll  = rtype&~Funct[5]&~Funct[4]&~Funct[3]&~Funct[2]&~Funct[1]&~Funct[0]; // sll
 
   // i format
    wire i_addi = ~Op[5]&~Op[4]& Op[3]&~Op[2]&~Op[1]&~Op[0]; // addi
@@ -68,15 +69,16 @@ module ctrl(Op, Funct, Zero,
   assign NPCOp[0] = i_beq & Zero;
   assign NPCOp[1] = i_j | i_jal;
   
-  // ALU_NOP   3'b000
-  // ALU_ADD   3'b001
-  // ALU_SUB   3'b010
-  // ALU_AND   3'b011
-  // ALU_OR    3'b100
-  // ALU_SLT   3'b101
-  // ALU_SLTU  3'b110
-  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_slt | i_addu;
-  assign ALUOp[1] = i_sub | i_beq | i_and | i_sltu | i_subu;
-  assign ALUOp[2] = i_or | i_ori | i_slt | i_sltu;
-
+  // ALU_NOP   4'b000
+  // ALU_ADD   4'b001
+  // ALU_SUB   4'b010
+  // ALU_AND   4'b011
+  // ALU_OR    4'b100
+  // ALU_SLT   4'b101
+  // ALU_SLTU  4'b110
+  // ALU_SLL   4'b111
+  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_slt | i_addu | i_sll;
+  assign ALUOp[1] = i_sub | i_beq | i_and | i_sltu | i_subu | i_sll;
+  assign ALUOp[2] = i_or | i_ori | i_slt | i_sltu | i_sll;
+  assign ALUOp[3] = 0;
 endmodule

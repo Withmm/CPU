@@ -16,7 +16,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    
    wire        RegWrite;    // control signal to register write
    wire        EXTOp;       // control signal to signed extension
-   wire [2:0]  ALUOp;       // ALU opertion
+   wire [3:0]  ALUOp;       // ALU opertion
    wire [1:0]  NPCOp;       // next PC operation
 
    wire [1:0]  WDSel;       // (register) write data selection
@@ -39,7 +39,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    wire [31:0] WD;          // register write data
    wire [31:0] RD1;         // register data specified by rs
    wire [31:0] B;           // operator for ALU B
-   
+   wire [4:0] shamt; 
    assign Op = instr[31:26];  // instruction
    assign Funct = instr[5:0]; // funct
    assign rs = instr[25:21];  // rs
@@ -47,7 +47,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    assign rd = instr[15:11];  // rd
    assign Imm16 = instr[15:0];// 16-bit immediate
    assign IMM = instr[25:0];  // 26-bit immediate
-   
+   assign shamt = instr[10:6]; 
    // instantiation of control unit
    ctrl U_CTRL ( 
       .Op(Op), .Funct(Funct), .Zero(Zero),
@@ -98,7 +98,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
 
    // instantiation of alu
    alu U_ALU ( 
-      .A(RD1), .B(B), .ALUOp(ALUOp), .C(aluout), .Zero(Zero)
+      .A(RD1), .B(B), .ALUOp(ALUOp), .C(aluout), .Zero(Zero), .shamt(shamt)
    );
 
 endmodule
