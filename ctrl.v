@@ -44,7 +44,7 @@ module ctrl(Op, Funct, Zero,
   // j format
    wire i_j    = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]&~Op[0];  // j
    wire i_jal  = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]& Op[0];  // jal
-
+   wire i_bne  = ~Op[5]&~Op[4]&~Op[3]& Op[2]&~Op[1]& Op[0];  // bne
   // generate control signals
   assign RegWrite   = rtype | i_lw | i_addi | i_ori | i_jal | i_lui | i_slti; // register write
   
@@ -67,7 +67,7 @@ module ctrl(Op, Funct, Zero,
   // NPC_PLUS4   2'b00
   // NPC_BRANCH  2'b01
   // NPC_JUMP    2'b10
-  assign NPCOp[0] = i_beq & Zero;
+  assign NPCOp[0] = (i_beq & Zero) | (i_bne &~Zero);
   assign NPCOp[1] = i_j | i_jal;
   
   // ALU_NOP   4'b000
@@ -80,7 +80,7 @@ module ctrl(Op, Funct, Zero,
   // ALU_SLL   4'b111
   // ALU_LUI   4'b1000
   assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_slt | i_slti | i_addu | i_sll | i_lui;
-  assign ALUOp[1] = i_sub | i_beq | i_and | i_sltu | i_subu | i_sll;
+  assign ALUOp[1] = i_sub | i_beq | i_and | i_sltu | i_subu | i_sll | i_bne;
   assign ALUOp[2] = i_or | i_ori | i_slt | i_slti | i_sltu | i_sll;
   assign ALUOp[3] = i_nor | i_lui;
 endmodule
