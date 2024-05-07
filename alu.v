@@ -20,9 +20,9 @@ module alu(A, B, ALUOp, C, Zero, shamt);
           `ALU_OR:   C = A | B;                      // OR/ORI
           `ALU_SLT:  C = (A < B) ? 32'd1 : 32'd0;    // SLT/SLTI
           `ALU_SLTU: C = ({1'b0, A} < {1'b0, B}) ? 32'd1 : 32'd0;
-          `ALU_SLL:  C = B << shamt;
-          `ALU_NOR:  C = ~(A | B);
-          `ALU_LUI:  C = B << 16;
+          `ALU_SLL:  C = B << shamt;                  //SLL
+          `ALU_NOR:  C = ~(A | B);                    //NOR
+          `ALU_LUI:  C = B << 16;                     //LUI
           default:   C = A;                          // Undefined
       endcase
    end // end always
