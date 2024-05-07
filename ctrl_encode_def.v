@@ -15,3 +15,4 @@
 `define ALU_SLL   4'b111
 `define ALU_NOR   4'b1000
 `define ALU_LUI   4'b1001
+`define ALU_SRL   4'b1010
