@@ -41,21 +41,22 @@ module ctrl(Op, Funct, Zero,
    wire i_beq  = ~Op[5]&~Op[4]&~Op[3]& Op[2]&~Op[1]&~Op[0]; // beq
    wire i_lui  = ~Op[5]&~Op[4]& Op[3]& Op[2]& Op[1]& Op[0]; // lui
    wire i_slti = ~Op[5]&~Op[4]& Op[3]&~Op[2]& Op[1]&~Op[0]; // slti
+   wire i_andi = ~Op[5]&~Op[4]& Op[3]& Op[2]&~Op[1]&~Op[0]; // andi
   // j format
    wire i_j    = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]&~Op[0];  // j
    wire i_jal  = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]& Op[0];  // jal
    wire i_bne  = ~Op[5]&~Op[4]&~Op[3]& Op[2]&~Op[1]& Op[0];  // bne
   // generate control signals
-  assign RegWrite   = rtype | i_lw | i_addi | i_ori | i_jal | i_lui | i_slti; // register write
+  assign RegWrite   = rtype | i_lw | i_addi | i_ori | i_jal | i_lui | i_slti | i_andi; // register write
   
   assign MemWrite   = i_sw;                           // memory write
-  assign ALUSrc     = i_lw | i_sw | i_addi | i_ori | i_lui | i_slti;   // ALU B is from instruction immediate
-  assign EXTOp      = i_addi | i_lw | i_sw | i_slti;           // signed extension
+  assign ALUSrc     = i_lw | i_sw | i_addi | i_ori | i_lui | i_slti | i_andi;   // ALU B is from instruction immediate
+  assign EXTOp      = i_addi | i_lw | i_sw | i_slti | i_andi;           // signed extension
 
   // GPRSel_RD   2'b00
   // GPRSel_RT   2'b01
   // GPRSel_31   2'b10
-  assign GPRSel[0] = i_lw | i_addi | i_ori |i_lui | i_slti;
+  assign GPRSel[0] = i_lw | i_addi | i_ori |i_lui | i_slti | i_andi;
   assign GPRSel[1] = i_jal;
   
   // WDSel_FromALU 2'b00
@@ -79,8 +80,8 @@ module ctrl(Op, Funct, Zero,
   // ALU_SLTU  4'b110
   // ALU_SLL   4'b111
   // ALU_LUI   4'b1000
-  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_slt | i_slti | i_addu | i_sll | i_lui;
-  assign ALUOp[1] = i_sub | i_beq | i_and | i_sltu | i_subu | i_sll | i_bne;
+  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_andi | i_slt | i_slti | i_addu | i_sll | i_lui;
+  assign ALUOp[1] = i_sub | i_beq | i_and | i_andi | i_sltu | i_subu | i_sll | i_bne;
   assign ALUOp[2] = i_or | i_ori | i_slt | i_slti | i_sltu | i_sll;
   assign ALUOp[3] = i_nor | i_lui;
 endmodule
