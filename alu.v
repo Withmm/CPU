@@ -25,6 +25,7 @@ module alu(A, B, ALUOp, C, Zero, shamt);
           `ALU_LUI:  C = B << 16;                     //LUI
           `ALU_SRL:  C = B >> shamt;                  //SRL
           `ALU_SLLV: C = B << A[4:0];                 // SLLV
+          `ALU_XOR: C = A ^ B;                 // XOR
           default:   C = A;                          // Undefined
       endcase
    end // end always

@@ -13,7 +13,6 @@ module NPC(PC, NPCOp, IMM, NPC, RD);  // next pc module
    assign PCPLUS4 = PC + 4; // pc + 4
    
    always @(*) begin
-      $display("RD = 0x%8x", RD);
       case (NPCOp)
           `NPC_PLUS4:  NPC = PCPLUS4;
           `NPC_BRANCH: NPC = PCPLUS4 + {{14{IMM[15]}}, IMM[15:0], 2'b00};
