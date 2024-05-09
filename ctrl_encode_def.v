@@ -21,3 +21,4 @@
 `define ALU_SLLV  4'b1011
 `define ALU_XOR   4'b1100
 `define ALU_SRA   4'b1101
+`define ALU_SRAV  4'b1110
