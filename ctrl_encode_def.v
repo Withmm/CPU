@@ -1,7 +1,8 @@
 // NPC control signal
-`define NPC_PLUS4   2'b00
-`define NPC_BRANCH  2'b01
-`define NPC_JUMP    2'b10
+`define NPC_PLUS4   4'b00
+`define NPC_BRANCH  4'b01
+`define NPC_JUMP    4'b10
+`define NPC_JR      4'b11
 
 
 // ALU control signal

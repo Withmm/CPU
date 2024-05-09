@@ -17,7 +17,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    wire        RegWrite;    // control signal to register write
    wire        EXTOp;       // control signal to signed extension
    wire [3:0]  ALUOp;       // ALU opertion
-   wire [1:0]  NPCOp;       // next PC operation
+   wire [3:0]  NPCOp;       // next PC operation
 
    wire [1:0]  WDSel;       // (register) write data selection
    wire [1:0]  GPRSel;      // general purpose register selection
@@ -63,7 +63,7 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    
    // instantiation of NPC
    NPC U_NPC ( 
-      .PC(PC), .NPCOp(NPCOp), .IMM(IMM), .NPC(NPC)
+      .PC(PC), .NPCOp(NPCOp), .IMM(IMM), .NPC(NPC), .RD(RD1)
    );
    
    // instantiation of register file
