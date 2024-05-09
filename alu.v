@@ -20,12 +20,13 @@ module alu(A, B, ALUOp, C, Zero, shamt);
           `ALU_OR:   C = A | B;                      // OR/ORI
           `ALU_SLT:  C = (A < B) ? 32'd1 : 32'd0;    // SLT/SLTI
           `ALU_SLTU: C = ({1'b0, A} < {1'b0, B}) ? 32'd1 : 32'd0;
-          `ALU_SLL:  C = B << shamt;                  //SLL
-          `ALU_NOR:  C = ~(A | B);                    //NOR
-          `ALU_LUI:  C = B << 16;                     //LUI
-          `ALU_SRL:  C = B >> shamt;                  //SRL
-          `ALU_SLLV: C = B << A[4:0];                 // SLLV
-          `ALU_XOR: C = A ^ B;                 // XOR
+          `ALU_SLL:  C = B << shamt;                 //SLL
+          `ALU_NOR:  C = ~(A | B);                   //NOR
+          `ALU_LUI:  C = B << 16;                    //LUI
+          `ALU_SRL:  C = B >> shamt;                 //SRL
+          `ALU_SLLV: C = B << A[4:0];                // SLLV
+          `ALU_XOR:  C = A ^ B;                      // XOR
+          `ALU_SRA:  C = B >>> shamt;                           // SRA
           default:   C = A;                          // Undefined
       endcase
    end // end always
