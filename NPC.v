@@ -19,6 +19,7 @@ module NPC(PC, NPCOp, IMM, NPC, RD);  // next pc module
           `NPC_BRANCH: NPC = PCPLUS4 + {{14{IMM[15]}}, IMM[15:0], 2'b00};
           `NPC_JUMP:   NPC = {PCPLUS4[31:28], IMM[25:0], 2'b00};
           `NPC_JR:     NPC = RD; 
+          `NPC_JALR:   NPC = RD; 
           default:     NPC = PCPLUS4;
       endcase
    end // end always

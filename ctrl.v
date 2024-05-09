@@ -36,6 +36,7 @@ module ctrl(Op, Funct, Zero,
    wire i_srl  = rtype&~Funct[5]&~Funct[4]&~Funct[3]&~Funct[2]& Funct[1]&~Funct[0]; // srl
    wire i_sllv = rtype&~Funct[5]&~Funct[4]&~Funct[3]& Funct[2]&~Funct[1]&~Funct[0]; // sllv
    wire i_jr   = rtype&~Funct[5]&~Funct[4]& Funct[3]&~Funct[2]&~Funct[1]&~Funct[0]; // jr
+   wire i_jalr = rtype&~Funct[5]&~Funct[4]& Funct[3]&~Funct[2]&~Funct[1]& Funct[0]; // jalr
   // i format
    wire i_addi = ~Op[5]&~Op[4]& Op[3]&~Op[2]&~Op[1]&~Op[0]; // addi
    wire i_ori  = ~Op[5]&~Op[4]& Op[3]& Op[2]&~Op[1]& Op[0]; // ori
@@ -66,15 +67,16 @@ module ctrl(Op, Funct, Zero,
   // WDSel_FromMEM 2'b01
   // WDSel_FromPC  2'b10 
   assign WDSel[0] = i_lw;
-  assign WDSel[1] = i_jal;
+  assign WDSel[1] = i_jal | i_jalr;
 
-  // NPC_PLUS4   4'b00
-  // NPC_BRANCH  4'b01
-  // NPC_JUMP    4'b10
-  // NPC_JR      4'b11
+  // NPC_PLUS4   4'b000
+  // NPC_BRANCH  4'b001
+  // NPC_JUMP    4'b010
+  // NPC_JR      4'b011
+  // NPC_JALR    4'b100
   assign NPCOp[0] = (i_beq & Zero) | (i_bne &~Zero) | i_jr;
   assign NPCOp[1] = i_j | i_jal | i_jr;
-  assign NPCOp[2] = 0;
+  assign NPCOp[2] = i_jalr;
   assign NPCOp[3] = 0;
   // ALU_NOP   4'b000
   // ALU_ADD   4'b001
