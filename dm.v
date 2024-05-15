@@ -23,21 +23,42 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
     end
     always @(*) begin
       case (LOADSel)
-        4'b0000: begin tmp_out = tmp; end
+        4'b0000: begin 
+            tmp_out = tmp; 
+        end // lw
         4'b0001: begin 
           case (byte) 
             2'b00: tmp_out = {{24{tmp[7]}}, {tmp[7:0]}};
             2'b01: tmp_out = {{24{tmp[15]}}, {tmp[15:8]}};
             2'b10: tmp_out = {{24{tmp[23]}}, {tmp[23:16]}};
             2'b11: tmp_out = {{24{tmp[31]}}, {tmp[31:24]}};
-            default: tmp_out = 0;
+            default: $display("byte error!");
           endcase 
+          /*
+          $display("from lb:");
           $display("addr = 0x%8X", addr);
           $display("byte = 0x%8X", byte);
           $display("addrByte = 0x%8X", addrByte);
           $display("tmp_out = 0x%8X", tmp_out);
-        end
-        default: tmp_out = 32'hxxxxxxxx; // 默认值，可以根据需要修改
+          */
+        end // lb
+        4'b0010: begin 
+          case (byte)
+            2'b00: tmp_out = {24'b0, {tmp[7:0]}};
+            2'b01: tmp_out = {24'b0, {tmp[15:8]}};
+            2'b10: tmp_out = {24'b0, {tmp[23:16]}};
+            2'b11: tmp_out = {24'b0, {tmp[31:24]}};
+            default: $display("byte error!");
+          endcase
+          /*
+          $display("from lbu:");
+          $display("addr = 0x%8X", addr);
+          $display("byte = 0x%8X", byte);
+          $display("addrByte = 0x%8X", addrByte);
+          $display("tmp_out = 0x%8X", tmp_out);
+          */
+        end  //lbu
+        default: $display("error!");
       endcase
     end
     assign dout = tmp_out;

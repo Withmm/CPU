@@ -11,7 +11,6 @@ if [ ! -d "$target_folder" ]; then
     echo "Error: Target folder does not exist."
     exit 1
 fi
-
 # 遍历当前文件夹中的文件
 for file in "$current_folder"/*; do
     # 获取文件名
