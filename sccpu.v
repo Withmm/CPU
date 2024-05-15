@@ -1,4 +1,4 @@
-module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_sel, reg_data);
+module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, LOADSel, reg_sel, reg_data);
          
    input      clk;          // clock
    input      rst;          // reset
@@ -10,18 +10,17 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
    output        MemWrite;  // memory write
    output [31:0] aluout;    // ALU output
    output [31:0] writedata; // data to data memory
-   
+   output [3:0]  LOADSel;   //lw, lb ... 
    input  [4:0] reg_sel;    // register selection (for debug use)
    output [31:0] reg_data;  // selected register data (for debug use)
    
    wire        RegWrite;    // control signal to register write
    wire        EXTOp;       // control signal to signed extension
-   wire [3:0]  ALUOp;       // ALU opertion
+   wire [4:0]  ALUOp;       // ALU opertion
    wire [3:0]  NPCOp;       // next PC operation
 
    wire [1:0]  WDSel;       // (register) write data selection
    wire [1:0]  GPRSel;      // general purpose register selection
-   
    wire        ALUSrc;      // ALU source for A
    wire        Zero;        // ALU ouput zero
 
@@ -53,7 +52,8 @@ module sccpu( clk, rst, instr, readdata, PC, MemWrite, aluout, writedata, reg_se
       .Op(Op), .Funct(Funct), .Zero(Zero),
       .RegWrite(RegWrite), .MemWrite(MemWrite),
       .EXTOp(EXTOp), .ALUOp(ALUOp), .NPCOp(NPCOp), 
-      .ALUSrc(ALUSrc), .GPRSel(GPRSel), .WDSel(WDSel)
+      .ALUSrc(ALUSrc), .GPRSel(GPRSel), .WDSel(WDSel), 
+      .LOADSel(LOADSel)
    );
    
    // instantiation of PC
