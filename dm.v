@@ -74,6 +74,22 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
           $display("tmp_out = 0x%8X", tmp_out);
           */
         end 
+        4'b0100: begin //lhu
+          case (byte)
+            2'b00: tmp_out = {24'b0, {tmp[15:0]}};
+            2'b01: $display("lhu error");
+            2'b10: tmp_out = {24'b0, {tmp[31:16]}};
+            2'b11: $display("lhu error");
+            default: $display("byte error!");
+          endcase
+          /*
+          $display("from lbu:");
+          $display("addr = 0x%8X", addr);
+          $display("byte = 0x%8X", byte);
+          $display("addrByte = 0x%8X", addrByte);
+          $display("tmp_out = 0x%8X", tmp_out);
+          */
+        end 
         default: $display("error!");
       endcase
     end
