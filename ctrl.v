@@ -53,6 +53,7 @@ module ctrl(Op, Funct, Zero,
    wire i_lbu  =  Op[5]&~Op[4]&~Op[3]& Op[2]&~Op[1]&~Op[0]; // lbu
    wire i_lh   =  Op[5]&~Op[4]&~Op[3]&~Op[2]&~Op[1]& Op[0]; // lh
    wire i_lhu  =  Op[5]&~Op[4]&~Op[3]& Op[2]&~Op[1]& Op[0]; // lhu
+   wire i_sb   =  Op[5]&~Op[4]& Op[3]&~Op[2]&~Op[1]&~Op[0]; // sb
   // j format
    wire i_j    = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]&~Op[0];  // j
    wire i_jal  = ~Op[5]&~Op[4]&~Op[3]&~Op[2]& Op[1]& Op[0];  // jal
@@ -60,9 +61,9 @@ module ctrl(Op, Funct, Zero,
   // generate control signals
   assign RegWrite   = rtype | i_lw | i_addi | i_ori | i_jal | i_lui | i_slti | i_andi | i_lb | i_lbu | i_lh | i_lhu; // register write
   
-  assign MemWrite   = i_sw;                           // memory write
-  assign ALUSrc     = i_lw | i_sw | i_addi | i_ori | i_lui | i_slti | i_andi | i_lb | i_lbu | i_lh | i_lhu;   // ALU B is from instruction immediate
-  assign EXTOp      = i_addi | i_lw | i_sw | i_slti | i_andi | i_lb | i_lbu | i_lh | i_lhu;           // signed extension
+  assign MemWrite   = i_sw | i_sb;                           // memory write
+  assign ALUSrc     = i_lw | i_sw | i_addi | i_ori | i_lui | i_slti | i_andi | i_lb | i_lbu | i_lh | i_lhu | i_sb;   // ALU B is from instruction immediate
+  assign EXTOp      = i_addi | i_lw | i_sw | i_slti | i_andi | i_lb | i_lbu | i_lh | i_lhu | i_sb;           // signed extension
 
   // GPRSel_RD   2'b00
   // GPRSel_RT   2'b01
@@ -101,7 +102,7 @@ module ctrl(Op, Funct, Zero,
   // ALU_SRA   5'b1101
   // ALU_SRAV  5'b1110
   // ALU_LB    5'b1111
-  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_andi | i_slt | i_slti | i_addu | i_sll | i_lui | i_sllv | i_sra | i_lb | i_lbu | i_lh | i_lhu;
+  assign ALUOp[0] = i_add | i_lw | i_sw | i_addi | i_and | i_andi | i_slt | i_slti | i_addu | i_sll | i_lui | i_sllv | i_sra | i_lb | i_lbu | i_lh | i_lhu | i_sb;
   assign ALUOp[1] = i_sub | i_beq | i_and | i_andi | i_sltu | i_subu | i_sll | i_bne | i_srl | i_sllv | i_srav;
   assign ALUOp[2] = i_or | i_ori | i_slt | i_slti | i_sltu | i_sll | i_xor | i_sra | i_srav;
   assign ALUOp[3] = i_nor | i_lui | i_srl | i_sllv | i_xor | i_sra | i_srav;
@@ -111,8 +112,9 @@ module ctrl(Op, Funct, Zero,
   // lbu    4'b0010
   // lh     4'b0011
   // lhu    4'b0100
-  assign LOADSel[0] = i_lb | i_lh;
+  // sb     4'b0101
+  assign LOADSel[0] = i_lb | i_lh | i_sb;
   assign LOADSel[1] = i_lbu | i_lh;
-  assign LOADSel[2] = i_lhu;
+  assign LOADSel[2] = i_lhu | i_sb;
   assign LOADSel[3] = 0;
 endmodule

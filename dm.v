@@ -17,8 +17,24 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
     assign tmp = dmem[addrByte[8:2]];
     always @(posedge clk) begin
       if (DMWr) begin
-        dmem[addrByte[8:2]] <= din;
-        $display("dmem[0x%8X] = 0x%8X,", addrByte, din); 
+        case (LOADSel)
+        4'b0101: begin // sb
+          case (byte) 
+            2'b00: dmem[addrByte[8:2]][7:0] = din[7:0];
+            2'b01: dmem[addrByte[8:2]][15:8] = din[7:0];
+            2'b10: dmem[addrByte[8:2]][23:16] = din[7:0];
+            2'b11: dmem[addrByte[8:2]][31:24] = din[7:0];
+            default: $display("byte error");
+          endcase
+          $display("byte = 0x%8X", byte);
+          $display("din = 0x%8X", din[7:0]);
+          $display("dmem[0x%8X] = 0x%8X,", addrByte, dmem[addrByte[8:2]]); 
+        end
+        default: begin 
+          dmem[addrByte[8:2]] <= din;
+          $display("dmem[0x%8X] = 0x%8X,", addrByte, din); 
+        end
+        endcase 
       end
     end
     always @(*) begin
@@ -67,7 +83,7 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
             default: $display("byte error!");
           endcase
           /*
-          $display("from lbu:");
+          $display("from lh:");
           $display("addr = 0x%8X", addr);
           $display("byte = 0x%8X", byte);
           $display("addrByte = 0x%8X", addrByte);
@@ -83,14 +99,14 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
             default: $display("byte error!");
           endcase
           /*
-          $display("from lbu:");
+          $display("from lhu:");
           $display("addr = 0x%8X", addr);
           $display("byte = 0x%8X", byte);
           $display("addrByte = 0x%8X", addrByte);
           $display("tmp_out = 0x%8X", tmp_out);
           */
-        end 
-        default: $display("error!");
+        end  
+        default: tmp_out = tmp;
       endcase
     end
     assign dout = tmp_out;
