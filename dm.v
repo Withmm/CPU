@@ -39,10 +39,12 @@ module dm(clk, DMWr, LOADSel, byte, addr, din, dout);
             2'b10: dmem[addrByte[8:2]][31:16] = din[31:16];
             2'b11: $display("sh: error");
             default: $display("byte error");
-          endcase 
+          endcase
+          /*
           $display("byte = 0x%8X", byte);
           $display("din = 0x%8X", din[15:0]);
           $display("dmem[0x%8X] = 0x%8X,", addrByte, dmem[addrByte[8:2]]); 
+          */
         end
         default: begin 
           dmem[addrByte[8:2]] <= din;
